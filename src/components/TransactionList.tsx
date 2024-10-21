@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import './TransactionList.css'; 
 
@@ -24,6 +25,9 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
 
   const balance = totalCredit - totalDebit;
 
+  // Calculate running total
+  let runningTotal = 0;
+
   return (
     <div className="transaction-list-container">
       <h2>Transactions</h2>
@@ -34,17 +38,23 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
             <th>Type</th>
             <th>Amount</th>
             <th>Purpose</th>
+            <th>Total Amount</th> {/* New column for Total Amount */}
           </tr>
         </thead>
         <tbody>
-          {transactions.map((t, index) => (
-            <tr key={index}>
-              <td>{t.date}</td>
-              <td>{t.type}</td>
-              <td>${t.amount.toFixed(2)}</td>
-              <td>{t.purpose}</td>
-            </tr>
-          ))}
+          {transactions.map((t, index) => {
+            // Update running total
+            runningTotal += t.type === 'credit' ? t.amount : -t.amount;
+            return (
+              <tr key={index}>
+                <td>{t.date}</td>
+                <td>{t.type}</td>
+                <td>${t.amount.toFixed(2)}</td>
+                <td>{t.purpose}</td>
+                <td>${runningTotal.toFixed(2)}</td> {/* Display the running total */}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       <h3>Total Credit: ${totalCredit.toFixed(2)}</h3>
@@ -55,3 +65,4 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
 };
 
 export default TransactionList;
+
